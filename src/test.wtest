@@ -1,0 +1,72 @@
+import vikingos.*
+import expedicion.*
+
+const ragnar = new Vikingo(casta = karl,rol = granjero,cantHijos = 2,cantArmas = 12,vidasCobradas = 40,hectareasDesignadas = 4,botin = 100)
+const bjorn = new Vikingo(casta = thrall,rol = soldado,cantHijos = 3,cantArmas = 45,vidasCobradas = 90,hectareasDesignadas = 20,botin = 80)
+const lagartha = new Vikingo(casta = thrall,rol = granjero,cantHijos = 2,cantArmas = 8,vidasCobradas = 33,hectareasDesignadas = 4,botin = 90)
+const floki = new Vikingo(casta = jarl ,rol = granjero,cantHijos = 0,cantArmas = 0,vidasCobradas = 40,hectareasDesignadas = 1,botin = 10)
+const pepita = new Vikingo(casta = jarl,rol = soldado,cantHijos = 1,cantArmas = 3,vidasCobradas = 21,hectareasDesignadas = 8,botin = 25)
+const paris = new Capital(potenciadorTierra = 60)
+const northumbria = new Aldea(cantCrucifijosEnIglesias = 80)
+const york = new AldeaAmurallada(cantMinimaRequerida = 2000,cantCrucifijosEnIglesias = 300)
+const unaExpedicion = new Expedicion(objetivos =[paris,northumbria])
+const otraExpedicion = new Expedicion(objetivos =[york])
+
+test "subo un vikingo a una expedicion" {
+	unaExpedicion.agregarVikingo(ragnar)
+	assert.equals([ragnar],unaExpedicion.mostrarVikingosEnLaExpedicion())
+
+}
+
+test "un vikingo no se sube a la expedicion"{
+	unaExpedicion.agregarVikingo(ragnar)
+	unaExpedicion.agregarVikingo(pepita)
+	assert.equals([ragnar],unaExpedicion.mostrarVikingosEnLaExpedicion())
+}
+
+test "unaExpedicion vale la pena"{
+	unaExpedicion.agregarVikingo(ragnar)
+	unaExpedicion.agregarVikingo(bjorn)
+	unaExpedicion.agregarVikingo(floki)
+	assert.that(unaExpedicion.valeLaPena())
+}
+
+test "otraExpedicion no vale la pena"{
+	unaExpedicion.agregarVikingo(lagartha)
+	unaExpedicion.agregarVikingo(ragnar)
+	unaExpedicion.agregarVikingo(bjorn)
+	assert.equals(false,otraExpedicion.valeLaPena())
+}
+
+test "se realiza una expedicion"{
+	unaExpedicion.agregarVikingo(ragnar)
+	unaExpedicion.agregarVikingo(bjorn)
+	unaExpedicion.agregarVikingo(floki)
+	unaExpedicion.agregarVikingo(lagartha)
+	unaExpedicion.salirEnExpedicion()
+	assert.equals(136,ragnar.botin())
+}
+
+//si aparecen los castillos solo hay que hacer un inherit de destino y agregarle sus particularidades sin
+//necesidad de cambiar el codigo existente ya que heredaria de una clase abstracta que esta justamente para estos casos
+//su implementacion seria asi:
+// class Castillo inherits Destino{ particularidades del castillo}
+// en particularidades del castillo hay que hacer override de los methods que se vayan a cambiar con las nuevas
+//particularidades.
+/*
+ * class Castillo inherits Destino{
+ * override method loVale(expedicion)
+ * override method esInvadido(expedicion)
+ * }
+ */
+
+test "floki asciende de casta"{
+	floki.ascender()
+	assert.equals(karl,floki.casta())
+}
+
+test "ragnar asciende"{
+	ragnar.ascender()
+	assert.equals(thrall,ragnar.casta())
+}
+
